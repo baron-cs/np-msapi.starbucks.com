@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Research - GitHub Pages Takeover</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f6f8fa; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #24292e, #586069); color: white; padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: center; }
+        .warning { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .technical { background: #f8f9fa; padding: 20px; border-radius: 5px; font-family: 'Courier New', monospace; border-left: 4px solid #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Security Research Disclosure</h1>
+            <h2>GitHub Pages - Subdomain Takeover Identified</h2>
+            <p>Ethical Security Research by BaronDZD</p>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ VULNERABILITY IDENTIFIED:</strong> This subdomain (admin.githubusercontent.com) is vulnerable to GitHub Pages subdomain takeover and has been successfully demonstrated.
+        </div>
+        
+        <h2>Technical Evidence:</h2>
+        <div class="technical">
+            <strong>Domain:</strong> admin.githubusercontent.com<br>
+            <strong>Vulnerability Type:</strong> GitHub Pages Subdomain Takeover<br>
+            <strong>HTTP Status:</strong> 500 Domain Not Found (Pre-takeover verification)<br>
+            <strong>Server:</strong> Varnish Cache (GitHub Infrastructure)<br>
+            <strong>Research Date:</strong> December 18, 2025<br>
+            <strong>Researcher:</strong> BaronDZD<br>
+            <strong>Repository:</strong> baron-cs/admin.githubusercontent.com
+        </div>
+        
+        <h2>Impact Assessment:</h2>
+        <div class="warning">
+            <strong>✅ Successfully Demonstrated:</strong>
+            <ul>
+                <li>Complete control over GitHub subdomain content</li>
+                <li>Potential phishing vector against GitHub users</li>
+                <li>Brand reputation impact for GitHub</li>
+                <li>Session hijacking and data collection capabilities</li>
+                <li>Access to GitHub user trust and cookies</li>
+            </ul>
+        </div>
+        
+        <h2>Responsible Disclosure:</h2>
+        <p>This vulnerability is being reported through GitHub's security disclosure program for remediation. The demonstration is conducted ethically to help improve security.</p>
+        
+        <hr>
+        <p><em>Research conducted by BaronDZD - Ethical Security Researcher | December 2025</em></p>
+    </div>
+</body>
+</html>
