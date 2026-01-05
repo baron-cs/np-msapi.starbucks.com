@@ -2,198 +2,170 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Research - Subdomain Takeover Assessment</title>
+    <title>Baron / 1337 – Cyber-Security & Bug-Bounty Hunter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+        :root{
+            --bg:#0a0a0a;
+            --accent:#00f2ff;
+            --text:#ffffff;
+            --sub:#888;
         }
-        .container { 
-            background: white; 
-            padding: 40px; 
-            border-radius: 15px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
-            max-width: 800px;
-            width: 90%;
-            margin: 20px;
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
+        body{
+            background:var(--bg);
+            color:var(--text);
+            overflow-x:hidden;
+            perspective:1500px;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
+        header{
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            transform-style:preserve-3d;
+            animation:float 6s ease-in-out infinite;
         }
-        .security-badge {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 20px;
+        @keyframes float{
+            0%,100%{transform:translateY(0) rotateX(0deg)}
+            50%{transform:translateY(-15px) rotateX(3deg)}
         }
-        .alert { 
-            color: #d32f2f; 
-            font-size: 28px; 
-            font-weight: bold;
-            margin: 10px 0;
+        h1{
+            font-size:clamp(2.5rem,6vw,5rem);
+            font-weight:700;
+            letter-spacing:-2px;
+            background:linear-gradient(90deg,var(--accent),#ff00c8);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            margin-bottom:1rem;
         }
-        .proof { 
-            background: #f8f9fa; 
-            padding: 20px; 
-            border-left: 4px solid #28a745; 
-            margin: 25px 0; 
-            border-radius: 5px;
+        p.tagline{
+            font-size:1.2rem;
+            color:var(--sub);
+            max-width:700px;
+            margin:0 auto 2.5rem;
+            line-height:1.6;
         }
-        .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
+        .buttons{
+            display:flex;
+            gap:1rem;
+            flex-wrap:wrap;
+            justify-content:center;
         }
-        code { 
-            background: #f1f3f4; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 14px;
+        a.btn{
+            position:relative;
+            padding:.9rem 1.8rem;
+            background:transparent;
+            border:2px solid var(--accent);
+            color:var(--accent);
+            text-decoration:none;
+            font-weight:500;
+            border-radius:30px;
+            transition:.3s;
+            overflow:hidden;
         }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
+        a.btn::before{
+            content:'';
+            position:absolute;
+            inset:0;
+            background:var(--accent);
+            transform:scaleX(0);
+            transform-origin:left;
+            transition:transform .4s ease;
+            z-index:-1;
         }
-        .detail-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
+        a.btn:hover{color:var(--bg)}
+        a.btn:hover::before{transform:scaleX(1)}
+        section.lessons{
+            padding:4rem 1rem;
+            max-width:1100px;
+            margin:auto;
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:1.5rem;
         }
-        .detail-label {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 5px;
+        .card{
+            background:#111;
+            border:1px solid #222;
+            border-radius:12px;
+            padding:1.5rem;
+            transform:translateY(30px);
+            opacity:0;
+            animation:fadeUp .8s forwards;
         }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #f0f0f0;
-            color: #6c757d;
-            font-size: 14px;
+        @keyframes fadeUp{
+            to{transform:translateY(0);opacity:1}
         }
-        .ethical-notice {
-            background: #e8f5e8;
-            border: 1px solid #4caf50;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 25px 0;
-        }
-        @media (max-width: 600px) {
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
+        .card h3{margin-bottom:.5rem;color:var(--accent)}
+        .card a{color:var(--sub);text-decoration:none;font-size:.9rem}
+        .card a:hover{color:var(--accent)}
+        footer{
+            text-align:center;
+            padding:2rem 0;
+            font-size:.8rem;
+            color:var(--sub);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="security-badge">ETHICAL SECURITY RESEARCH</div>
-            <h1 class="alert">🔒 SUBDOMAIN TAKEOVER ASSESSMENT</h1>
-            <p><strong>Responsible Disclosure - Security Research Purpose Only</strong></p>
-        </div>
-        
-        <div class="ethical-notice">
-            <h3>🛡️ Ethical Testing Notice</h3>
-            <p><strong>This page is created for legitimate security research under responsible disclosure guidelines.</strong> The takeover was performed to demonstrate vulnerability impact and will be immediately removed upon request or after remediation.</p>
-        </div>
-
-        <div class="proof">
-            <h3>📋 Assessment Details</h3>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <div class="detail-label">Target Subdomain</div>
-                    <code>main.work</code>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Security Researcher</div>
-                    <div>BaronDZD (Bugcrowd)</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Assessment Date</div>
-                    <div>December 17, 2025</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Vulnerability Type</div>
-                    <div>Subdomain Takeover (GitHub Pages)</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Severity Classification</div>
-                    <div>P1 (Critical) - Complete Control</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Certificate Evidence</div>
-                    <div>Amazon RSA 2048 M03</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="warning">
-            <h3>⚠️ Impact Assessment</h3>
-            <p>This subdomain represents <strong>Machine Learning workflow graph infrastructure</strong> in a production environment. The existing Amazon-issued SSL certificate and "main" designation indicate critical business infrastructure that could be leveraged for:</p>
-            <ul>
-                <li>Data interception and manipulation</li>
-                <li>Phishing campaigns targeting internal users</li>
-                <li>Malware distribution under trusted domain</li>
-                <li>API credential harvesting</li>
-            </ul>
-        </div>
-
-        <h3>🔍 Technical Evidence</h3>
-        <div class="proof">
-            <h4>Vulnerability Confirmation:</h4>
-            <ul>
-                <li><strong>DNS Status:</strong> NOERROR response with no valid A record</li>
-                <li><strong>CNAME Chain:</strong> Dangling reference to GitHub Pages</li>
-                <li><strong>SSL Certificate:</strong> Valid Amazon-issued certificate confirms production status</li>
-                <li><strong>Service Confirmation:</strong> GitHub Pages successfully configured and serving content</li>
-            </ul>
-            
-            <h4>Business Context:</h4>
-            <ul>
-                <li>Machine Learning workflow management system</li>
-                <li>Production "main" environment (highest business value)</li>
-                <li>Enterprise-grade AWS infrastructure</li>
-                <li>Internal-facing critical business function</li>
-            </ul>
-        </div>
-
-        <div class="ethical-notice">
-            <h3>🤝 Responsible Disclosure Commitment</h3>
-            <p>This assessment was conducted under the following ethical guidelines:</p>
-            <ul>
-                <li><strong>No Data Access:</strong> No attempt to access sensitive data or systems</li>
-                <li><strong>Limited Scope:</strong> Assessment limited to subdomain control demonstration only</li>
-                <li><strong>Immediate Remediation:</strong> Repository will be privatized/deleted immediately upon request</li>
-                <li><strong>Full Cooperation:</strong> Complete transparency and assistance for remediation</li>
-            </ul>
-        </div>
-
-        <div class="footer">
-            <p><strong>Security Research by:</strong> BaronDZD | <strong>Program:</strong> Certinia Bug Bounty (Bugcrowd)</p>
-            <p><em>This assessment demonstrates a security vulnerability for responsible disclosure purposes. All findings are shared confidentially with the affected organization for remediation.</em></p>
-            <p><!-- Bugcrowd Submission: BaronDZD --></p>
+<header>
+    <div>
+        <h1>Baron / 1337</h1>
+        <p class="tagline">
+            Cyber-security & bug-bounty hunter; 32 bugs validated across Bugcrowd, HackerOne, Intigriti.  
+            Access-control snaps rated P1 giving org-wide takeover, SSRF tunnels P1 leaking cloud keys and metadata,  
+            GraphQL IDOR P1 turning any user into admin, parser tricks P1 landing RCE via file upload,  
+            relay misroutes P2 exposing cross-app tokens, JWT key-swap P2 hijacking accounts,  
+            open-redirect chains P3 weaponising phishing, cache poison P3 planting persistent XSS,  
+            race windows P3 forcing one-click payouts, shadow endpoints P4 bleeding sensitive infos.
+        </p>
+        <div class="buttons">
+            <a class="btn" href="https://portswigger.net/web-security" target="_blank" rel="noopener">WebSec Academy</a>
+            <a class="btn" href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank" rel="noopener">Payloads Bible</a>
+            <a class="btn" href="https://www.hacker101.com/" target="_blank" rel="noopener">Hacker101</a>
+            <a class="btn" href="https://www.intigriti.com/blog" target="_blank" rel="noopener">Intigriti Blog</a>
+            <a class="btn" href="https://academy.hackthebox.com/" target="_blank" rel="noopener">HTB Academy</a>
         </div>
     </div>
+</header>
+
+<section class="lessons">
+    <div class="card" style="animation-delay:.1s">
+        <h3>GraphQL IDOR</h3>
+        <a href="https://graphql.org/learn/" target="_blank" rel="noopener">Learn syntax →</a><br>
+        <a href="https://github.com/doyensec/graphql-attack" target="_blank" rel="noopener">Audit checklist →</a>
+    </div>
+    <div class="card" style="animation-delay:.2s">
+        <h3>SSRF Mastery</h3>
+        <a href="https://portswigger.net/web-security/ssrf" target="_blank" rel="noopener">PortSwigger labs →</a><br>
+        <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Request%20Forgery" target="_blank" rel="noopener">Payloads →</a>
+    </div>
+    <div class="card" style="animation-delay:.3s">
+        <h3>Access-Control Breaks</h3>
+        <a href="https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control" target="_blank" rel="noopener">OWASP Top-10 →</a><br>
+        <a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Access_Control_Cheat_Sheet.md" target="_blank" rel="noopener">Cheat-sheet →</a>
+    </div>
+    <div class="card" style="animation-delay:.4s">
+        <h3>JWT Hijacks</h3>
+        <a href="https://jwt.io/introduction" target="_blank" rel="noopener">JWT.io →</a><br>
+        <a href="https://github.com/ticarpi/jwt_tool" target="_blank" rel="noopener">jwt_tool →</a>
+    </div>
+    <div class="card" style="animation-delay:.5s">
+        <h3>Cache Poison</h3>
+        <a href="https://portswigger.net/research/web-cache-entanglement" target="_blank" rel="noopener">Research paper →</a><br>
+        <a href="https://github.com/GrrrDog/Acunetix-PoCs" target="_blank" rel="noopener">PoC repo →</a>
+    </div>
+    <div class="card" style="animation-delay:.6s">
+        <h3>Race Conditions</h3>
+        <a href="https://portswigger.net/web-security/race-conditions" target="_blank" rel="noopener">Lab →</a><br>
+        <a href="https://github.com/PortSwigger/turbo-intruder" target="_blank" rel="noopener">Turbo Intruder →</a>
+    </div>
+</section>
+
+<footer>
+    &copy; 2025 Baron / 1337 – no CVEs left behind.
+</footer>
 </body>
 </html>
-EOF
